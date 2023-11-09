@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dummy CSV</title>
+    <style>
+        table, th, td {
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="download">download CSV</button>
+    <table id="dummyTable">
+        <thead>
+            <tr>
+                <td>序號</td>
+                <td>班級</td>
+                <td>學號</td>
+                <td>姓名</td>
+                <td>Github帳號</td>
+                <td>作業一</td>
+                <td>作業二</td>
+                <td>作業三</td>
+                <td>作業四</td>
+                <td>作業五</td>
+                <td>作業六</td>
+                <td>作業七</td>
+                <td>作業八</td>
+                <td>作業九</td>
+                <td>作業十</td>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        function createDeptAndId() {
+            const department = ["資工", "電資AI", "電資資安", "創新AI"];
+            const departmentCode = ["590", "598", "C52", "C53", "C71"];
+            const year = ["109", "110", "111", "112"];
+            const grade = ["四", "三", "碩二", "碩一"];
+            
+            let dept, deptcode = "";
+            let tmp1 = Math.floor(Math.random() * grade.length);
+            if (tmp1 < 2) {
+                dept = department[0];
+                deptcode = departmentCode[0];
+            }
+            else {
+                tmp2 = Math.floor(Math.random() * department.length);
+                dept = department[tmp2];
+                deptcode = departmentCode[tmp2 + 1];
+            }
+            const deptgrade = dept + grade[tmp1];
+            let studentID = year[tmp1] + deptcode + Math.floor(Math.random() * (999 - 1) + 1).toString().padStart(3, "0");
+            return [deptgrade, studentID];
+        }
+
+        function createName() {
+            // List From TA's code
+            const firstNameList = ["陳", "林", "黃", "張", "李", "王", "吳", "劉", "蔡", "楊", "許", "鄭", "謝", "洪", "郭", "邱", "曾", "廖", "賴", "徐", "周", "葉", "蘇", "莊", "呂", "江", "何", "蕭", "羅", "高", "潘", "簡", "朱", "鍾", "游", "彭", "詹", "胡", "施", "沈"];
+            let lastName = "";
+            for(let i = 0; i < 2; i++) {
+                // From TA's code
+                lastName += String.fromCharCode(Math.floor(Math.random() * 0x51ff + 0x4e00));
+            }
+            return firstNameList[Math.floor(Math.random() * firstNameList.length)] + lastName;
+        }
+
+        function createGithub() {
+            let result = "";
+            for (let i = 0; i < 10; i++) {
+                let tmp = Math.floor(Math.random() * 3)
+                if (tmp == 0) {
+                    result += String.fromCharCode(Math.floor(Math.random() * 10 + 48));
+                }
+                else if (tmp == 1) {
+                    result += String.fromCharCode(Math.floor(Math.random() * 26 + 65));
+                }
+                else {
+                    result += String.fromCharCode(Math.floor(Math.random() * 26 + 97));
+                }
+            }
+            return result;
+        }
+
+        function createData() {
+            const data = [];
+            for (let i = 1; i <= 120; i++) {
+                let row = [];
+                const [className, studentId] = createDeptAndId();
+                const studentName = createName();
+                const githubAccount = createGithub();
+                row.push(i);
+                row.push(className);
+                row.push(studentId);
+                row.push(studentName);
+                row.push(githubAccount);
+                for(let j = 0; j < 10; j++) {
+                    row.push(Math.floor(Math.random() * 11));
+                }
+                data.push(row);
+            }
+            return data;
+        }
+
+        function convertToCSV(data) {
+            const csv = data.map(row => row.join(',')).join('\n');
+            return 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+        }
+
+        function downloadCSV() {
+            const data = createData();
+            const csv = convertToCSV(data);
+
+            const link = document.createElement('a');
+            link.href = csv;
+            link.download = 'data.csv';
+            link.click();
+        }
+
+        const downloadBtn = document.getElementById('download');
+        downloadBtn.addEventListener('click', downloadCSV);
+
+        const dummyTable = document.getElementById('dummyTable');
+        const tbody = dummyTable.getElementsByTagName('tbody')[0];
+        const data = createData();
+
+        data.forEach(row => {
+            const rowData = document.createElement('tr');
+            row.forEach(element => {
+                const elementData = document.createElement('td');
+                elementData.textContent = element;
+                rowData.appendChild(elementData);
+            });
+            tbody.appendChild(rowData);
+        });
+    </script>
+</body>
+
+</html>
