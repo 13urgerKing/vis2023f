@@ -1,0 +1,14 @@
+{
+  "name": "d5921e47301fcfc0",
+  "main": "d5921e47301fcfc0@37.js",
+  "version": "37.0.0",
+  "homepage": "https://observablehq.com/d/d5921e47301fcfc0",
+  "author": {
+    "name": "13urgerKing's Workspace",
+    "url": "https://observablehq.com/@13urgerking-ws"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
