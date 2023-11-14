@@ -1,101 +1,69 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>蘋果成績表d3</title>
+    <title>蘋果成績表</title>
     <style>
         #div1 {
-            font-size: 20pt;
+            font-size: 18pt;
             color: #ffffff;
             text-shadow: 0.1em 0.1em 0.1em #ff0000;
             text-align: center;
             background-color: rgba(255, 255, 0, 0.1);
-            border: solid 1px black;
+            border: solid 1px #000000;
             margin: 5px auto;
+            width: 90%;
             padding: 10px;
-            
         }
 
         #div2, #div3 {
-            font-size: 20pt;
+            font-size: 16pt;
             text-align: center;
             background-color: rgba(255, 255, 0, 0.1);
-            border: solid 1px black;
-            
-            
+            border: solid 1px #000000;
             margin: 5px auto;
+            width: 90%;
             padding: 10px;
         }
 
         body {
             background-color: rgba(255, 128, 255, 0.1);
-            font-family: 'CircleFont', 'Noto Serif JP', serif;
         }
 
-        table {
+        table, tr, td {
+            border: 1px solid;
             border-collapse: collapse;
-            border: 2px black solid;
-            font-family: 'CircleFont', 'Noto Serif JP', serif;
-            font-size: 16pt;
-            /* font: 16px sans-serif; */
+            margin: 10px auto;
+            background-color: rgba(242, 244, 232);
+            padding: 10px;
             margin-left: auto;
             margin-right: auto;
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-
-        td,th {
-            border: 1px black solid;
-            padding: 5px;
-            background-color: rgba(128, 255, 255, 0.1);
-        }
-
-        td.left {
-            text-align: left;
         }
 
         td img {
-            transition: width, height;
-            transition-duration: 0.5s;
             width: 50px;
             height: 50px;
-            /* display: block; */
             margin-left: auto;
             margin-right: auto;
         }
 
         img:hover {
-            box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+            box-shadow: 0 0 2px 2px rgba(0, 140, 186, 0.5);
         }
 
         td:hover img {
-            transition: width, height;
-            transition-duration: 0.5s;
             width: 100px;
             height: 100px;
         }
 
-        td.excellent-kid:hover img {
+        img.good-kid:hover {
             animation-name: happy;
             animation-duration: 0.5s;
             animation-iteration-count: infinite;
         }
 
-        td.good-kid:hover img {
-            animation-name: happy;
-            animation-duration: 1.0s;
-            animation-iteration-count: infinite;
-        }
-
-        td.fair-kid:hover img {
+        img.bad-kid:hover {
             animation-name: angry;
-            animation-duration: 1.5s;
-            animation-iteration-count: infinite;
-        }
-
-        td.poor-kid:hover img {
-            animation-name: angry;
-            animation-duration: 0.1s;
+            animation-duration: 0.5s;
             animation-iteration-count: infinite;
         }
 
@@ -123,98 +91,50 @@
     <div id="div3"></div>
     <script src="./d3.v3.min.js"></script>
     <script type="text/javascript" charset="utf-8">
-        d3.select("#div2")
-            .append("table")
+        d3.select("#div2").append("table").append("tr").selectAll("td")
+        .data([10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]).enter()
+        .append("td").text(function(i) {
+            return i;
+        })
+        .append("img")
+        .attr("src", function(i) {
+            return "../apple/" + i + ".svg";
+        })
+        .attr("class", function(i) {
+            if(i < 5) {
+                return "bad-kid";
+            }
+            else {
+                return "good-kid";
+            }
+        });
+
+        d3.csv("./data.csv", function(data) {
+            d3.select("#div3").append("table").selectAll("tr")
+            .data(data).enter()
             .append("tr")
             .selectAll("td")
-            .data([10,9,8,7,6,5,4,3,2,1,0])
-            .enter()
-            .append("td")
-            .text(function (d, i) {
-                if (i <= 10 || isNaN(d)) {
-                    return d;
+            .data(function(i) {
+                return Object.values(i);
+            }).enter()
+            .append("td").html(function (i, index) {
+                if (index == 3) {
+                    return '<img src="' + 'https://picsum.photos/200/300/?random&' + Date.now() + '">' +
+                        '<hr><a href="https://github.com/' + i + '/vis2023f/" target="_blank">' + i + '</a>';
+                }
+                else if(index > 4){
+                    if(i < 5) {
+                        return '<img class="bad-kid" src="' + '../apple/' + i + '.svg' + '">';
+                    }
+                    else {
+                        return '<img class="good-kid" src="' + '../apple/' + i + '.svg' + '">';
+                    }
+                }
+                else {
+                    return i;
                 }
             })
-            // img
-            .attr("class", function (d, i) { 
-                if (d == 10) return "excellent-kid"; 
-                else if (d >= 7 ) return "good-kid"; 
-                else if (d >= 2 ) return "fair-kid"; 
-                else return "poor-kid";})
-            .append("img")
-            .attr("src", function (d, i) { 
-                if (d == 10) return "../apple/10.svg";
-                else if (d == 9) return "../apple/9.svg";
-                else if (d == 8) return "../apple/8.svg";
-                else if (d == 7) return "../apple/7.svg";
-                else if (d == 6) return "../apple/6.svg";
-                else if (d == 5) return "../apple/5.svg";
-                else if (d == 4) return "../apple/4.svg";
-                else if (d == 3) return "../apple/3.svg";
-                else if (d == 2) return "../apple/2.svg";
-                else if (d == 1) return "../apple/1.svg";
-                else if (d == 0) return "../apple/0.svg";
-                else return "../apple/00.svg"; })
-            .attr("x", "0")
-            .attr("y", "0")
-            .attr("width",  function(d, i) { return (i + 1) * 60; })
-            .attr("height", function(d, i) { return (i + 1) * 60; });
-
-
-    d3.text("./data.csv", function (data) {
-
-        //var parsedCSV = d3.csv.parseRows(data);
-        parsedCSV = d3.csv.parseRows(data);
-        //console.log(parsedCSV);
-
-        var container = d3.select("#div3")
-            .append("table")
-            .selectAll("tr")
-            .data(parsedCSV)
-            .enter()
-            .append("tr")
-            .selectAll("td")
-            .data(function (d) { return d; }).enter()
-            .append("td")
-            .html(function (d, i) {
-                if ( i == 4 && d != 'GitHub 帳號' ) {
-                    //隨機產生圖片：https://www.ugm.com.tw/modules/tad_book3/html.php?tbdsn=877
-                    const timestamp = Date.now();
-                    const imageSource = 'https://picsum.photos/200/300/?random&' + timestamp;
-        
-                    return '<img src="' + imageSource + '">' +
-                        '<hr><a href="https://github.com/' + d + '/vis2023f/" target="_blank">' + d + '</a>';
-                }
-                else if ( i == 0 || i == 2 || isNaN(d)) {
-                    return d;
-                }
-            })
-            .filter(function (d, i) { return (i > 2 && !isNaN(d) && d != ""); })
-            .attr("class", function (d, i) { 
-                if (d == 10) return "excellent-kid"; 
-                else if (d >= 7 ) return "good-kid"; 
-                else if (d >= 2 ) return "fair-kid"; 
-                else return "poor-kid";})
-            .append("img")
-            .attr("src", function (d, i) {
-                if (d == 10)  return "../apple/10.svg";
-                else if (d == 9)  return "../apple/9.svg";
-                else if (d == 8)  return "../apple/8.svg";
-                else if (d == 7)  return "../apple/7.svg";
-                else if (d == 6)  return "../apple/6.svg";
-                else if (d == 5)  return "../apple/5.svg";
-                else if (d == 4)  return "../apple/4.svg";
-                else if (d == 3)  return "../apple/3.svg";
-                else if (d == 2)  return "../apple/2.svg";
-                else if (d == 1)  return "../apple/1.svg";
-                else if (d == 0)  return "../apple/0.svg";
-                else  return "../apple/00.svg";
-            })
-            .attr("width", 50)
-            .attr("height", 50)
-            ;
-    });
+        })
     </script>
 </body>
-
 </html>

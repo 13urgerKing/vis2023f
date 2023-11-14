@@ -89,12 +89,12 @@
 
         function createData() {
             const data = [];
-            for (let i = 1; i <= 120; i++) {
+            for (let i = 0; i < 120; i++) {
                 let row = [];
                 const [className, studentId] = createDeptAndId();
                 const studentName = createName();
                 const githubAccount = createGithub();
-                row.push(i);
+                row.push(i + 1);
                 row.push(className);
                 row.push(studentId);
                 row.push(studentName);
@@ -107,16 +107,16 @@
             return data;
         }
 
-        function convertToCSV(data) {
+        function convertCSV(data) {
             const csv = data.map(row => row.join(',')).join('\n');
             return 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
         }
 
         function downloadCSV() {
             const data = createData();
-            const csv = convertToCSV(data);
-
+            const csv = convertCSV(data);
             const link = document.createElement('a');
+
             link.href = csv;
             link.download = 'data.csv';
             link.click();
@@ -140,5 +140,4 @@
         });
     </script>
 </body>
-
 </html>
